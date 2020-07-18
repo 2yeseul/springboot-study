@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
 public interface AccountRepository extends JpaRepository<Account, Long> {
-    boolean existByEmail(String email);
+    boolean existsByEmail(String email);
 
-    boolean existByNickname(String nickname);
+    boolean existsByNickname(String nickname);
 }

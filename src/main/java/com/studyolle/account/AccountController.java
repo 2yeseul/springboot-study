@@ -23,7 +23,7 @@ public class AccountController {
     private final AccountRepository accountRepository;
     private final JavaMailSender javaMailSender;
 
-    @InitBinder("signUpForm") // camel 같은 것들 따라감
+    @InitBinder("signUpForm") // camel 같은 것들 따라감, binder 설정
     public void initBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(signUpFormValidator);
     }
