@@ -9,7 +9,7 @@ import org.springframework.validation.Validator;
 @RequiredArgsConstructor // private final 멤버 생성자 만들어줌 (private은 안만들어줌)
 public class SignUpFormValidator implements Validator {
 
-    private AccountRepository accountRepository;
+    private final AccountRepository accountRepository;
 
     @Override
     public boolean supports(Class<?> aClass) {

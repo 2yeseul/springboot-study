@@ -21,7 +21,7 @@ class AccountControllerTest {
     private MockMvc mockMvc;
 
     @Autowired
-    AccountRepository accountRepository;
+    private AccountRepository accountRepository;
 
     @DisplayName("회원 가입 화면 보이는지 테스트")
     @Test
@@ -49,14 +49,14 @@ class AccountControllerTest {
     @Test
     void signUpSubmit_with_correct_input() throws Exception {
         mockMvc.perform(post("/sign-up")
-                .param("nickname", "keesun")
-                .param("email", "keesun@email.com")
+                .param("nickname", "admin")
+                .param("email", "admin@email.com")
                 .param("password", "12345678")
                 .with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
 
-        assertTrue(accountRepository.existsByEmail("keesun@email.com"));
+        assertTrue(accountRepository.existsByEmail("admin@email.com"));
 
     }
 }
