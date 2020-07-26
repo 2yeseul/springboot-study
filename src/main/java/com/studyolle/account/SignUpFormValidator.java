@@ -8,7 +8,7 @@ import org.springframework.validation.Validator;
 @Component
 @RequiredArgsConstructor // private final 멤버 생성자 만들어줌 (private은 안만들어줌)
 public class SignUpFormValidator implements Validator {
-
+// final 빼뜨리면 안됨
     private final AccountRepository accountRepository;
 
     @Override
