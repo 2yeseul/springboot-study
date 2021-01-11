@@ -1,5 +1,6 @@
 package com.studyolle.account;
 
+import com.studyolle.domain.Account;
 import org.apache.logging.log4j.message.SimpleMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,11 @@ class AccountControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
 
-        assertTrue(accountRepository.existsByEmail("admin@email.com"));
+        Account account = accountRepository.findByEmail("admin@email.com");
+        assertNotNull(account);
+        // 평문 그대로 저장 안함
+        assertNotEquals(account.getPassword(), "12345678");
+        //assertTrue(accountRepository.existsByEmail("admin@email.com"));
         // SimpleMailMessage를 가지고 아무 클래스의 센드가 호출 되었는지
         then(javaMailSender).should().send(any(SimpleMailMessage.class));
     }
