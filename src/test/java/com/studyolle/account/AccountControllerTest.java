@@ -70,6 +70,7 @@ class AccountControllerTest {
         assertNotNull(account);
         // 평문 그대로 저장 안함
         assertNotEquals(account.getPassword(), "12345678");
+        assertNotNull(account.getEmailCheckToken());
         //assertTrue(accountRepository.existsByEmail("admin@email.com"));
         // SimpleMailMessage를 가지고 아무 클래스의 센드가 호출 되었는지
         then(javaMailSender).should().send(any(SimpleMailMessage.class));
