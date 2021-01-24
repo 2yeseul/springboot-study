@@ -52,6 +52,11 @@ public class AccountService {
         javaMailSender.send(mailMessage);
     }
 
+    public void completeSignUp(Account account) {
+        account.completeSignUp();
+        login(account);
+    }
+
     public void login(Account account) {
         // AuthenticationManager가 하는 일이랑 같음
         // why? pw는 인코딩한 pw이기 때문. 정석적인 것은 plain pw로만 접근가능해서
