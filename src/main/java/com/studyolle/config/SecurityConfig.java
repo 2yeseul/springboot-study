@@ -18,7 +18,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .mvcMatchers("/", "/login", "/sign-up", "/check-email", "/check-email-token",
                         "/email-login", "/check-email-login", "/login-link").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated();
+        http.csrf()
+                .ignoringAntMatchers("/h2-console/**");
+        http.headers()
+                .frameOptions()
+                .disable();
     }
 
     // static resources security 적용 안하게함
