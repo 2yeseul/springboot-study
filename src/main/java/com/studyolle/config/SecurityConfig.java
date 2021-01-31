@@ -15,16 +15,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .mvcMatchers("/", "/login", "/sign-up", "/check-email", "/check-email-token",
+                .mvcMatchers("/", "/login", "/sign-up", "/check-email-token",
                         "/email-login", "/check-email-login", "/login-link").permitAll()
                 .mvcMatchers(HttpMethod.GET, "/profile/*").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated();
-        http.csrf()
-                .ignoringAntMatchers("/h2-console/**");
-        http.headers()
-                .frameOptions()
-                .disable();
+        http.formLogin()
+                .loginPage("/login").permitAll(); // 커스텀 로그인 페이지 사용
+        http.logout()
+                .logoutSuccessUrl("/");
     }
 
     // static resources security 적용 안하게함

@@ -4,10 +4,15 @@ import com.studyolle.domain.Account;
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +22,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AccountService {
+public class AccountService implements UserDetailsService {
 
     private final AccountRepository accountRepository;
     private final JavaMailSender javaMailSender;
@@ -43,7 +48,7 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
-    private void sendSignUpConfirmEmail(Account newAccount) {
+    public void sendSignUpConfirmEmail(Account newAccount) {
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(newAccount.getEmail());
         mailMessage.setSubject("스터디올래, 회원 가입 인증");
@@ -52,19 +57,24 @@ public class AccountService {
         javaMailSender.send(mailMessage);
     }
 
-    public void completeSignUp(Account account) {
-        account.completeSignUp();
-        login(account);
+    public void login(Account account) {
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                new UserAccount(account),
+                account.getPassword(),
+                List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        SecurityContextHolder.getContext().setAuthentication(token);
     }
 
-    public void login(Account account) {
-        // AuthenticationManager가 하는 일이랑 같음
-        // why? pw는 인코딩한 pw이기 때문. 정석적인 것은 plain pw로만 접근가능해서
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                new UserAccount(account), // 인증된 객체
-                account.getPassword(),
-                List.of(new SimpleGrantedAuthority("ROLE USER"))
-        );
-        SecurityContextHolder.getContext().setAuthentication(token);
+    @Override
+    public UserDetails loadUserByUsername(String emailOrNickname) throws UsernameNotFoundException {
+
+        Account account = accountRepository.findByEmail(emailOrNickname);
+        if(account == null) {
+            account = accountRepository.findByNickname(emailOrNickname);
+        }
+        if(account == null) {
+            throw new UsernameNotFoundException(emailOrNickname);
+        }
+        return new UserAccount(account);
     }
 }
